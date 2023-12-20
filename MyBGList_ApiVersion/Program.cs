@@ -18,6 +18,9 @@ builder.Services.AddSwaggerGen(options =>
     options.SwaggerDoc(
         "v2",
         new OpenApiInfo { Title = "MyBGList", Version = "v2.0" });
+    options.SwaggerDoc(
+        "v3",
+        new OpenApiInfo { Title = "MyBGList", Version = "v3.0" });
 });
 
 builder.Services.AddCors(options =>
@@ -71,6 +74,9 @@ if (app.Environment.IsDevelopment())
         options.SwaggerEndpoint(
             $"/swagger/v2/swagger.json",
             $"MYBGList v2");
+        options.SwaggerEndpoint(
+            $"/swagger/v3/swagger.json",
+            $"MYBGList v3");
     });
 }
 
