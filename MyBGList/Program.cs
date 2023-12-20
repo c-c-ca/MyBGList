@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,10 +52,14 @@ app.UseCors();
 app.UseAuthorization();
 
 // Minimal API
-app.MapGet("/error", [EnableCors("AnyOrigin")] () => 
+app.MapGet("/error", 
+    [EnableCors("AnyOrigin")]
+    [ResponseCache(NoStore = true)] () => 
     Results.Problem());
 
-app.MapGet("/error/test", [EnableCors("AnyOrigin")] () => 
+app.MapGet("/error/test", 
+    [EnableCors("AnyOrigin")]
+    [ResponseCache(NoStore = true)] () => 
     { throw new Exception("test"); });
 
 app.MapControllers();
