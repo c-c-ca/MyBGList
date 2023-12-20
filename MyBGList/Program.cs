@@ -62,6 +62,19 @@ app.MapGet("/error/test",
     [ResponseCache(NoStore = true)] () => 
     { throw new Exception("test"); });
 
+app.MapGet("/cod/test",
+    [EnableCors("AnyOrigin")]
+    [ResponseCache(NoStore = true)] () =>
+    Results.Text("<script>" +
+        "window.alert('Your client supports JavaScript!" +
+        "\\r\\n\\r\\n" +
+        $"Server time (UTC): {DateTime.UtcNow.ToString("o")}" +
+        "\\r\\n" +
+        "Client time (UTC): ' + new Date().toISOString());" +
+        "</script>" +
+        "<noscript>Your client does not support JavaScript</noscript>",
+        "text/html"));
+
 app.MapControllers();
 
 app.Run();
