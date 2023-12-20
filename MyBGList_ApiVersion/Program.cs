@@ -34,6 +34,12 @@ builder.Services.AddCors(options =>
             cfg.AllowAnyHeader();
             cfg.AllowAnyMethod();
         });
+        options.AddPolicy(name: "AnyOrigin_GetOnly", cfg =>
+        {
+            cfg.AllowAnyOrigin();
+            cfg.AllowAnyHeader();
+            cfg.WithMethods("GET");
+        });
     }
 );
 
@@ -101,7 +107,7 @@ app.MapGet("/v{version:ApiVersion}/error/test",
 app.MapGet("/v{version:ApiVersion}/cod/test",
     [ApiVersion("1.0")]
     [ApiVersion("2.0")]
-    [EnableCors("AnyOrigin")]
+    [EnableCors("AnyOrigin_GetOnly")]
     [ResponseCache(NoStore = true)] () =>
     Results.Text("<script>" +
         "window.alert('Your client supports JavaScript!" +
