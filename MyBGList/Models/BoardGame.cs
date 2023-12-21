@@ -47,6 +47,15 @@ namespace MyBGList.Models
         [Required]
         public int OwnedUsers { get; set; }
 
+        [MaxLength(200)]
+        public string AlternateNames { get; set; } = null!;
+
+        [MaxLength(200)]
+        public string Designer { get; set; } = null!;
+
+        [Required]
+        public int Flags { get; set; }
+
         [Required]
         public DateTime CreatedDate { get; set; }
 
