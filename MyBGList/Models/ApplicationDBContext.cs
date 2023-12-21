@@ -49,6 +49,13 @@ namespace MyBGList.Models
                 .HasForeignKey(f => f.MechanicId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<BoardGame>()
+                .HasOne(x => x.Publisher)
+                .WithMany(y => y.BoardGames)
+                .HasForeignKey(f => f.PublisherId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
         }
 
         public DbSet<BoardGame> BoardGames => Set<BoardGame>();
@@ -56,5 +63,6 @@ namespace MyBGList.Models
         public DbSet<Mechanic> Mechanics => Set<Mechanic>();
         public DbSet<BoardGames_Domains> BoardGames_Domains => Set<BoardGames_Domains>();
         public DbSet<BoardGames_Mechanics> BoardGames_Mechanics => Set<BoardGames_Mechanics>();
+        public DbSet<Publisher> Publishers => Set<Publisher>();
     }
 }
