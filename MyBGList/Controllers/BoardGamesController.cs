@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using MyBGList.DTO;
 using MyBGList.Models;
+using System.Linq.Dynamic.Core;
 
 namespace MyBGList.Controllers
 {
@@ -24,9 +25,12 @@ namespace MyBGList.Controllers
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 60)]
         async public Task<RestDTO<BoardGame[]>> Get(
             int pageIndex = 0,
-            int pageSize = 10)
+            int pageSize = 10,
+            string? sortColumn = "Name",
+            string? sortOrder = "ASC")
         {
             var query = _context.BoardGames
+                .OrderBy($"{sortColumn} {sortOrder}")
                 .Skip(pageIndex * pageSize)
                 .Take(pageSize);
 
