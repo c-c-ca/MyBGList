@@ -32,7 +32,7 @@ namespace MyBGList.Controllers
 
         [HttpPut(Name = "Seed")]
         [ResponseCache(NoStore = true)]
-        public async Task<IActionResult> Seed ()
+        public async Task<IActionResult> Seed (int? id = null)
         {
             var config = new CsvConfiguration(CultureInfo.GetCultureInfo("pt-BR"))
             {
@@ -62,7 +62,8 @@ namespace MyBGList.Controllers
             {
                 if (!record.ID.HasValue ||
                     string.IsNullOrEmpty(record.Name) ||
-                    existingBoardGames.ContainsKey(record.ID.Value)) 
+                    existingBoardGames.ContainsKey(record.ID.Value) ||
+                    (id.HasValue && id.Value != record.ID.Value))
                 { 
                     skippedRows++;
                     continue;
