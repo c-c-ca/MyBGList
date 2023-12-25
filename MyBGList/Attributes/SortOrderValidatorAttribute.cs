@@ -15,7 +15,8 @@ namespace MyBGList.Attributes
         {
             var strValue = value as string;
             if (!string.IsNullOrEmpty(strValue) &&
-                AllowedValues.Contains(strValue))
+                AllowedValues.Any(value => 
+                    string.Equals(value, strValue, StringComparison.OrdinalIgnoreCase)))
             {
                 return ValidationResult.Success;
             }

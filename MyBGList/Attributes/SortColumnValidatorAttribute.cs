@@ -20,7 +20,8 @@ namespace MyBGList.Attributes
             {
                 var strValue = value as string;
                 if (!string.IsNullOrEmpty(strValue) &&
-                    EntityType.GetProperties().Any(p => p.Name == strValue))
+                    EntityType.GetProperties().Any(p => 
+                        string.Equals(p.Name, strValue, StringComparison.OrdinalIgnoreCase)))
                 {
                     return ValidationResult.Success;
                 }
