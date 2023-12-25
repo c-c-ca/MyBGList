@@ -26,28 +26,24 @@ namespace MyBGList.Controllers
         [HttpGet(Name = "GetBoardGames")]
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 60)]
         async public Task<RestDTO<BoardGame[]>> Get(
-            int pageIndex = 0,
-            [Range(1, 100)] int pageSize = 10,
-            [SortColumnValidator(typeof(BoardGameDTO))] string? sortColumn = "Name",
-            [SortOrderValidator] string? sortOrder = "ASC",
-            string? filterQuery = null)
+            [FromQuery] RequestDTO<BoardGameDTO> input)
         {
             var query = _context.BoardGames.AsQueryable();
-            if (!string.IsNullOrEmpty(filterQuery))
+            if (!string.IsNullOrEmpty(input.FilterQuery))
             {
-                query = query.Where(b => b.Name.Contains(filterQuery));
+                query = query.Where(b => b.Name.Contains(input.FilterQuery));
             }
             var recordCount = await query.CountAsync();
             query = query
-                .OrderBy($"{sortColumn} {sortOrder}")
-                .Skip(pageIndex * pageSize)
-                .Take(pageSize);
+                .OrderBy($"{input.SortColumn} {input.SortOrder}")
+                .Skip(input.PageIndex * input.PageSize)
+                .Take(input.PageSize);
 
             return new RestDTO<BoardGame[]>()
             {
                 Data = await query.ToArrayAsync(),
-                PageIndex = pageIndex,
-                PageSize = pageSize,
+                PageIndex = input.PageIndex,
+                PageSize = input.PageSize,
                 RecordCount = recordCount,
                 Links = new List<LinkDTO>
                 {
@@ -56,11 +52,11 @@ namespace MyBGList.Controllers
                             null, 
                             "BoardGames", 
                             new { 
-                                pageIndex, 
-                                pageSize, 
-                                sortColumn, 
-                                sortOrder, 
-                                filterQuery 
+                                input.PageIndex, 
+                                input.PageSize, 
+                                input.SortColumn, 
+                                input.SortOrder, 
+                                input.FilterQuery 
                             }, 
                             Request.Scheme)!,
                         "self",
