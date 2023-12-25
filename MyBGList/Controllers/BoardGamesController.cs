@@ -126,28 +126,34 @@ namespace MyBGList.Controllers
 
         [HttpDelete(Name = "DeleteBoardGame")]
         [ResponseCache(NoStore = true)]
-        public async Task<RestDTO<BoardGame?>> Delete(int id)
+        public async Task<RestDTO<BoardGame[]?>> Delete(string idList)
         {
-            var boardgame = await _context.BoardGames
-                .Where(b => b.Id == id)
-                .FirstOrDefaultAsync();
+            var idArray = idList.Split(',').Select(x => int.Parse(x));
+            var deletedBGList = new List<BoardGame>();
 
-            if (boardgame != null)
+            foreach (int id in idArray)
             {
-                _context.BoardGames.Remove(boardgame);
-                await _context.SaveChangesAsync();
+                var boardgame = await _context.BoardGames
+                    .Where(b => b.Id == id)
+                    .FirstOrDefaultAsync();
+                if (boardgame != null)
+                {
+                    deletedBGList.Add(boardgame);
+                    _context.BoardGames.Remove(boardgame);
+                    await _context.SaveChangesAsync();
+                };
             }
 
-            return new RestDTO<BoardGame?>()
+            return new RestDTO<BoardGame[]?>()
             {
-                Data = boardgame,
+                Data = deletedBGList.Count > 0 ? deletedBGList.ToArray() : null,
                 Links = new List<LinkDTO>
                 {
                     new LinkDTO(
                         Url.Action(
                             null,
                             "BoardGames",
-                            id,
+                            idList,
                             Request.Scheme)!,
                         "self",
                         "DELETE"
