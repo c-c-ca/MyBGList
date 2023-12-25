@@ -80,11 +80,28 @@ else
             details.Extensions["traceId"] =
                 System.Diagnostics.Activity.Current?.Id
                 ?? context.TraceIdentifier;
-            details.Type =
-                "https://tools.ietf.org/html/rfc7231#section-6.6.1";
-            details.Status = StatusCodes.Status500InternalServerError;
+
+            if (exceptionHandler?.Error is NotImplementedException)
+            {
+                details.Type =
+                    "https://tools.ietf.org/html/rfc7231#section-6.6.2";
+                details.Status = StatusCodes.Status501NotImplemented;
+            }
+            else if (exceptionHandler?.Error is TimeoutException)
+            {
+                details.Type =
+                    "https://tools.ietf.org/html/rfc7231#section-6.6.5";
+                details.Status = StatusCodes.Status504GatewayTimeout;
+            }
+            else
+            {
+                details.Type =
+                    "https://tools.ietf.org/html/rfc7231#section-6.6.1";
+                details.Status = StatusCodes.Status500InternalServerError;
+            }
+
             await context.Response.WriteAsync(
-                System.Text.Json.JsonSerializer.Serialize(details));
+            System.Text.Json.JsonSerializer.Serialize(details));
         });
     });
 }
@@ -118,6 +135,16 @@ app.MapGet("/error/test",
     [EnableCors("AnyOrigin")]
     [ResponseCache(NoStore = true)] () => 
     { throw new Exception("test"); });
+
+app.MapGet("/error/test/501",
+    [EnableCors("AnyOrigin")]
+    [ResponseCache(NoStore = true)] () =>
+    { throw new NotImplementedException("test"); });
+
+app.MapGet("/error/test/504",
+    [EnableCors("AnyOrigin")]
+    [ResponseCache(NoStore = true)] () =>
+    { throw new TimeoutException("test"); });
 
 app.MapGet("/cod/test",
     [EnableCors("AnyOrigin")]
