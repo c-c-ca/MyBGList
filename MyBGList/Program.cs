@@ -68,7 +68,25 @@ if (app.Configuration.GetValue<bool>("UseDeveloperExceptionPage"))
 }
 else
 {
-    app.UseExceptionHandler("/error");
+    app.UseExceptionHandler(action =>
+    {
+        action.Run(async context =>
+        {
+            var exceptionHandler =
+                context.Features.Get<IExceptionHandlerPathFeature>();
+
+            var details = new ProblemDetails();
+            details.Detail = exceptionHandler?.Error.Message;
+            details.Extensions["traceId"] =
+                System.Diagnostics.Activity.Current?.Id
+                ?? context.TraceIdentifier;
+            details.Type =
+                "https://tools.ietf.org/html/rfc7231#section-6.6.1";
+            details.Status = StatusCodes.Status500InternalServerError;
+            await context.Response.WriteAsync(
+                System.Text.Json.JsonSerializer.Serialize(details));
+        });
+    });
 }
 
 app.UseHttpsRedirection();
@@ -78,23 +96,23 @@ app.UseCors();
 app.UseAuthorization();
 
 // Minimal API
-app.MapGet("/error",
-    [EnableCors("AnyOrigin")]
-    [ResponseCache(NoStore = true)] (HttpContext context) =>
-    {
-        var exceptionHandler =
-            context.Features.Get<IExceptionHandlerPathFeature>();
+//app.MapGet("/error",
+//    [EnableCors("AnyOrigin")]
+//    [ResponseCache(NoStore = true)] (HttpContext context) =>
+//    {
+//        var exceptionHandler =
+//            context.Features.Get<IExceptionHandlerPathFeature>();
 
-        var details = new ProblemDetails();
-        details.Detail = exceptionHandler?.Error.Message;
-        details.Extensions["traceId"] =
-            System.Diagnostics.Activity.Current?.Id
-            ?? context.TraceIdentifier;
-        details.Type =
-            "https://tools.ietf.org/html/rfc7231#section-6.6.1";
-        details.Status = StatusCodes.Status500InternalServerError;
-        return Results.Problem(details);
-    });
+//        var details = new ProblemDetails();
+//        details.Detail = exceptionHandler?.Error.Message;
+//        details.Extensions["traceId"] =
+//            System.Diagnostics.Activity.Current?.Id
+//            ?? context.TraceIdentifier;
+//        details.Type =
+//            "https://tools.ietf.org/html/rfc7231#section-6.6.1";
+//        details.Status = StatusCodes.Status500InternalServerError;
+//        return Results.Problem(details);
+//    });
 
 app.MapGet("/error/test", 
     [EnableCors("AnyOrigin")]
