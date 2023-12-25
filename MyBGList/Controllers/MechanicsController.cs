@@ -10,28 +10,28 @@ namespace MyBGList.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class DomainsController : ControllerBase
+    public class MechanicsController : ControllerBase
     {
-        private readonly ILogger<DomainsController> _logger;
+        private readonly ILogger<MechanicsController> _logger;
         private readonly ApplicationDBContext _context;
 
-        public DomainsController(
-            ILogger<DomainsController> logger,
+        public MechanicsController(
+            ILogger<MechanicsController> logger,
             ApplicationDBContext context)
         {
             _logger = logger;
             _context = context;
         }
 
-        [HttpGet(Name = "GetDomains")]
+        [HttpGet(Name = "GetMechanics")]
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 60)]
-        async public Task<RestDTO<Domain[]>> Get(
-            [FromQuery] RequestDTO<DomainDTO> input)
+        async public Task<RestDTO<Mechanic[]>> Get(
+            [FromQuery] RequestDTO<MechanicDTO> input)
         {
-            var query = _context.Domains.AsQueryable();
+            var query = _context.Mechanics.AsQueryable();
             if (!string.IsNullOrEmpty(input.FilterQuery))
             {
-                query = query.Where(d => d.Name.Contains(input.FilterQuery));
+                query = query.Where(m => m.Name.Contains(input.FilterQuery));
             }
             var recordCount = await query.CountAsync();
             query = query
@@ -39,7 +39,7 @@ namespace MyBGList.Controllers
                 .Skip(input.PageIndex * input.PageSize)
                 .Take(input.PageSize);
 
-            return new RestDTO<Domain[]>()
+            return new RestDTO<Mechanic[]>()
             {
                 Data = await query.ToArrayAsync(),
                 PageIndex = input.PageIndex,
@@ -50,7 +50,7 @@ namespace MyBGList.Controllers
                     new LinkDTO(
                         Url.Action(
                             null,
-                            "Domains",
+                            "Mechanics",
                             new {
                                 input.PageIndex,
                                 input.PageSize,
@@ -65,34 +65,34 @@ namespace MyBGList.Controllers
             };
         }
 
-        [HttpPost(Name = "UpdateDomain")]
+        [HttpPost(Name = "UpdateMechanic")]
         [ResponseCache(NoStore = true)]
-        public async Task<RestDTO<Domain?>> Post(DomainDTO model)
+        public async Task<RestDTO<Mechanic?>> Post(MechanicDTO model)
         {
-            var domain = await _context.Domains
-                .Where(d => d.Id == model.Id)
+            var mechanic = await _context.Mechanics
+                .Where(m => m.Id == model.Id)
                 .FirstOrDefaultAsync();
 
-            if (domain != null)
+            if (mechanic != null)
             {
                 if (!string.IsNullOrEmpty(model.Name))
                 {
-                    domain.Name = model.Name;
+                    mechanic.Name = model.Name;
                 }
-                domain.LastModifiedDate = DateTime.Now;
-                _context.Domains.Update(domain);
+                mechanic.LastModifiedDate = DateTime.Now;
+                _context.Mechanics.Update(mechanic);
                 await _context.SaveChangesAsync();
             }
 
-            return new RestDTO<Domain?>()
+            return new RestDTO<Mechanic?>()
             {
-                Data = domain,
+                Data = mechanic,
                 Links = new List<LinkDTO>
                 {
                     new LinkDTO(
                         Url.Action(
                             null,
-                            "Domains",
+                            "Mechanics",
                             model,
                             Request.Scheme)!,
                         "self",
@@ -102,29 +102,29 @@ namespace MyBGList.Controllers
             };
         }
 
-        [HttpDelete(Name = "DeleteDomain")]
+        [HttpDelete(Name = "DeleteMechanic")]
         [ResponseCache(NoStore = true)]
-        public async Task<RestDTO<Domain?>> Delete(int id)
+        public async Task<RestDTO<Mechanic?>> Delete(int id)
         {
-            var domain = await _context.Domains
-                .Where(d => d.Id == id)
+            var mechanic = await _context.Mechanics
+                .Where(m => m.Id == id)
                 .FirstOrDefaultAsync();
 
-            if (domain != null)
+            if (mechanic != null)
             {
-                _context.Domains.Remove(domain);
+                _context.Mechanics.Remove(mechanic);
                 await _context.SaveChangesAsync();
             }
 
-            return new RestDTO<Domain?>()
+            return new RestDTO<Mechanic?>()
             {
-                Data = domain,
+                Data = mechanic,
                 Links = new List<LinkDTO>
                 {
                     new LinkDTO(
                         Url.Action(
                             null,
-                            "Domains",
+                            "Mechanics",
                             id,
                             Request.Scheme)!,
                         "self",
