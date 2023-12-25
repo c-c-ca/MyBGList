@@ -18,7 +18,7 @@ namespace MyBGList.Swagger
                     .Where(p => p.Name == parameter.Name)
                     .SelectMany(parameter => parameter.GetCustomAttributes(true))
                 )
-                .OfType<SortOrderValidatorAttribute>();
+                .OfType<SortColumnValidatorAttribute>();
 
             if (attributes != null)
             {
