@@ -28,7 +28,7 @@ namespace MyBGList.Controllers
             int pageIndex = 0,
             [Range(1, 100)] int pageSize = 10,
             string? sortColumn = "Name",
-            string? sortOrder = "ASC",
+            [RegularExpression("ASC|DESC")] string? sortOrder = "ASC",
             string? filterQuery = null)
         {
             var query = _context.BoardGames.AsQueryable();
