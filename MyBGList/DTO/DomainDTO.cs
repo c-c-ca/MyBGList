@@ -9,7 +9,7 @@ namespace MyBGList.DTO
         [Required]
         public int Id { get; set; }
 
-        [LettersOnlyValidator]
+        [LettersOnlyValidator(UseRegex = true)]
         public string? Name { get; set; }
     }
 }
