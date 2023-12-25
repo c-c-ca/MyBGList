@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using MyBGList.Attributes;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace MyBGList.DTO
@@ -8,6 +9,7 @@ namespace MyBGList.DTO
         [Required]
         public int Id { get; set; }
 
+        [LettersOnlyValidator]
         public string? Name { get; set; }
     }
 }
