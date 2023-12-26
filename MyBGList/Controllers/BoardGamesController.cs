@@ -28,6 +28,8 @@ namespace MyBGList.Controllers
         async public Task<RestDTO<BoardGame[]>> Get(
             [FromQuery] RequestDTO<BoardGameDTO> input)
         {
+            _logger.LogInformation("Get method started.");
+
             var query = _context.BoardGames.AsQueryable();
             if (!string.IsNullOrEmpty(input.FilterQuery))
             {
