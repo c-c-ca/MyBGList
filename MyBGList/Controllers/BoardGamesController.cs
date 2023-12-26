@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using MyBGList.Attributes;
 using MyBGList.DTO;
 using MyBGList.Models;
+using MyBGList.Constants;
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Dynamic.Core;
 
@@ -28,7 +29,7 @@ namespace MyBGList.Controllers
         async public Task<RestDTO<BoardGame[]>> Get(
             [FromQuery] RequestDTO<BoardGameDTO> input)
         {
-            _logger.LogInformation("Get method started.");
+            _logger.LogInformation(CustomLogEvents.BoardGamesController_Get, "Get method started.");
 
             var query = _context.BoardGames.AsQueryable();
             if (!string.IsNullOrEmpty(input.FilterQuery))
