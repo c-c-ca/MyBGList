@@ -13,7 +13,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Logging
     .ClearProviders()
     //.AddSimpleConsole()
-    .AddJsonConsole()
+    .AddJsonConsole(options =>
+    {
+        options.TimestampFormat = "HH:mm";
+        options.UseUtcTimestamp = true;
+    })
     //.AddSimpleConsole(options =>
     //{
     //    options.SingleLine = true;
