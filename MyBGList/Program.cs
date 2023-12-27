@@ -6,6 +6,7 @@ using MyBGList.Constants;
 using MyBGList.Models;
 using MyBGList.Swagger;
 using Serilog;
+using Serilog.Events;
 using Serilog.Sinks.MSSqlServer;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -42,6 +43,13 @@ builder.Host.UseSerilog((ctx, lc) =>
                 "{Timestamp:HH:mm:ss} [{Level:u3}] " +
                 "[{MachineName} #{ThreadId} {ThreadName}] " +
                 "{Message:lj}{NewLine}{Exception}",
+            rollingInterval: RollingInterval.Day);
+        lc.WriteTo.File("Logs/errors.txt",
+            outputTemplate:
+                "{Timestamp:HH:mm:ss} [{Level:u3}] " +
+                "[{MachineName} #{ThreadId} {ThreadName}] " +
+                "{Message:lj}{NewLine}{Exception}",
+            restrictedToMinimumLevel: LogEventLevel.Error,
             rollingInterval: RollingInterval.Day);
         lc.WriteTo.MSSqlServer(
             connectionString:
