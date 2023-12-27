@@ -12,7 +12,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Logging
     .ClearProviders()
-    .AddSimpleConsole()
+    //.AddSimpleConsole()
+    .AddJsonConsole()
     //.AddSimpleConsole(options =>
     //{
     //    options.SingleLine = true;
