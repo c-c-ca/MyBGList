@@ -5,8 +5,11 @@ using Microsoft.EntityFrameworkCore;
 using MyBGList.Constants;
 using MyBGList.Models;
 using MyBGList.Swagger;
+using Serilog;
+using Serilog.Sinks.MSSqlServer;
 
 var builder = WebApplication.CreateBuilder(args);
+
 builder.Logging
     .ClearProviders()
     .AddSimpleConsole()
@@ -22,6 +25,21 @@ builder.Logging
             builder
                 .Configuration["Azure:ApplicationInsights:ConnectionString"],
             loggerOptions => { });
+
+builder.Host.UseSerilog((ctx, lc) =>
+    {
+        lc.ReadFrom.Configuration(ctx.Configuration);
+        lc.WriteTo.MSSqlServer(
+            connectionString:
+                ctx.Configuration.GetConnectionString("DefaultConnection"),
+                sinkOptions: new MSSqlServerSinkOptions
+                {
+                    TableName = "LogEvents",
+                    AutoCreateSqlTable = true,
+                }
+            );
+    },
+    writeToProviders: true);
 
 // Add services to the container.
 
