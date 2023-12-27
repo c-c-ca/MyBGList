@@ -29,6 +29,8 @@ builder.Logging
 builder.Host.UseSerilog((ctx, lc) =>
     {
         lc.ReadFrom.Configuration(ctx.Configuration);
+        lc.Enrich.WithMachineName();
+        lc.Enrich.WithThreadId();
         lc.WriteTo.MSSqlServer(
             connectionString:
                 ctx.Configuration.GetConnectionString("DefaultConnection"),
