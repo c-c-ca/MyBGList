@@ -176,7 +176,8 @@ app.MapGet("/error",
         app.Logger.LogError(
             CustomLogEvents.Error_Get,
             exceptionHandler?.Error,
-            "An unhandled exception occurred.");
+            "An unhandled exception occurred: {errorMessage}.",
+            exceptionHandler?.Error.Message);
 
         return Results.Problem(details);
     });
