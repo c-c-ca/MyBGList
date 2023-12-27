@@ -16,7 +16,12 @@ builder.Logging
     //    options.TimestampFormat = "HH:mm:ss ";
     //    options.UseUtcTimestamp = true;
     //})
-    .AddDebug();
+    .AddDebug()
+    .AddApplicationInsights(
+        telemetry => telemetry.ConnectionString =
+            builder
+                .Configuration["Azure:ApplicationInsights:ConnectionString"],
+            loggerOptions => { });
 
 // Add services to the container.
 
