@@ -29,7 +29,10 @@ namespace MyBGList.Controllers
         async public Task<RestDTO<BoardGame[]>> Get(
             [FromQuery] RequestDTO<BoardGameDTO> input)
         {
-            _logger.LogInformation(CustomLogEvents.BoardGamesController_Get, "Get method started.");
+            _logger.LogInformation(
+                CustomLogEvents.BoardGamesController_Get, 
+                "Get method started at {StartTime.Now:HH:mm}",
+                DateTime.Now);
 
             var query = _context.BoardGames.AsQueryable();
             if (!string.IsNullOrEmpty(input.FilterQuery))
