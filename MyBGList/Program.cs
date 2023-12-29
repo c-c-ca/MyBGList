@@ -85,6 +85,12 @@ builder.Services.AddControllers(options =>
             Location = ResponseCacheLocation.Any,
             Duration = 60,
         });
+    options.CacheProfiles.Add("Client-120",
+        new CacheProfile()
+        {
+            Location = ResponseCacheLocation.Client,
+            Duration = 120,
+        });
 });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
