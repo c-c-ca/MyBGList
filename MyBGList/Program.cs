@@ -150,6 +150,12 @@ app.UseCors();
 
 app.UseAuthorization();
 
+app.Use((context, next) =>
+{
+    context.Response.Headers["cache-control"] = "no-cache, no-store";
+    return next.Invoke();
+});
+
 // Minimal API
 app.MapGet("/error",
     [EnableCors("AnyOrigin")]
