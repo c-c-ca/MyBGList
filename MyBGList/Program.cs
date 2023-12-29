@@ -127,8 +127,9 @@ builder.Services.AddDbContext<ApplicationDBContext>(options =>
 
 builder.Services.AddResponseCaching(options =>
 {
-    options.MaximumBodySize = 32 * 1024 * 1024;
-    options.SizeLimit = 50 * 1024 * 1024;
+    options.MaximumBodySize = 128 * 1024 * 1024;
+    options.SizeLimit = 200 * 1024 * 1024;
+    options.UseCaseSensitivePaths = true;
 });
 
 builder.Services.AddMemoryCache();
