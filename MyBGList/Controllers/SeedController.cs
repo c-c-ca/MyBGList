@@ -31,7 +31,7 @@ namespace MyBGList.Controllers
         }
 
         [HttpPut(Name = "Seed")]
-        [ResponseCache(NoStore = true)]
+        [ResponseCache(CacheProfileName = "NoCache")]
         public async Task<IActionResult> Seed ()
         {
             var config = new CsvConfiguration(CultureInfo.GetCultureInfo("pt-BR"))

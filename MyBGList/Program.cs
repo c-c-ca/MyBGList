@@ -73,6 +73,18 @@ builder.Services.AddControllers(options =>
         (x, y) => $"The value '{x}' is not valid for {y}.");
     options.ModelBindingMessageProvider.SetMissingKeyOrValueAccessor(
         () => $"A value is required.");
+
+    options.CacheProfiles.Add("NoCache", 
+        new CacheProfile() 
+        { 
+            NoStore = true 
+        });
+    options.CacheProfiles.Add("Any-60",
+        new CacheProfile()
+        {
+            Location = ResponseCacheLocation.Any,
+            Duration = 60,
+        });
 });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
