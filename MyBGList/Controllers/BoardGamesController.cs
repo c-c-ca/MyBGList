@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using MyBGList.Attributes;
 using MyBGList.DTO;
 using MyBGList.Models;
 using MyBGList.Constants;
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Dynamic.Core;
+using System.Text.Json;
 
 namespace MyBGList.Controllers
 {
@@ -15,13 +17,16 @@ namespace MyBGList.Controllers
     {
         private readonly ILogger<BoardGamesController> _logger;
         private readonly ApplicationDBContext _context;
+        private readonly IMemoryCache _memoryCache;
 
         public BoardGamesController(
             ILogger<BoardGamesController> logger, 
-            ApplicationDBContext context)
+            ApplicationDBContext context,
+            IMemoryCache memoryCache)
         {
             _logger = logger;
             _context = context;
+            _memoryCache = memoryCache;
         }
 
         [HttpGet(Name = "GetBoardGames")]
@@ -39,15 +44,24 @@ namespace MyBGList.Controllers
             {
                 query = query.Where(b => b.Name.Contains(input.FilterQuery));
             }
+
             var recordCount = await query.CountAsync();
-            query = query
-                .OrderBy($"{input.SortColumn} {input.SortOrder}")
-                .Skip(input.PageIndex * input.PageSize)
-                .Take(input.PageSize);
+
+            BoardGame[]? result = null;
+            var cacheKey = $"{input.GetType()}-{JsonSerializer.Serialize(input)}";
+            if (!_memoryCache.TryGetValue<BoardGame[]>(cacheKey, out result))
+            {
+                query = query
+                    .OrderBy($"{input.SortColumn} {input.SortOrder}")
+                    .Skip(input.PageIndex * input.PageSize)
+                    .Take(input.PageSize);
+                result = await query.ToArrayAsync();
+                _memoryCache.Set(cacheKey, result, new TimeSpan(0, 0, 30));
+            }
 
             return new RestDTO<BoardGame[]>()
             {
-                Data = await query.ToArrayAsync(),
+                Data = result,
                 PageIndex = input.PageIndex,
                 PageSize = input.PageSize,
                 RecordCount = recordCount,
