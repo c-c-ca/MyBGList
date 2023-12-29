@@ -202,6 +202,13 @@ app.MapGet("/cache/test/1",
         return Results.Ok();
     });
 
+app.MapGet("/cache/test/2",
+    [EnableCors("AnyOrigin")]
+    (HttpContext context) =>
+    {
+        return Results.Ok();
+    });
+
 app.MapControllers();
 
 app.Run();
