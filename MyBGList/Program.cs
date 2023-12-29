@@ -194,6 +194,14 @@ app.MapGet("/cod/test",
         "<noscript>Your client does not support JavaScript</noscript>",
         "text/html"));
 
+app.MapGet("/cache/test/1",
+    [EnableCors("AnyOrigin")]
+    (HttpContext context) =>
+    {
+        context.Response.Headers["cache-control"] = "no-cache, no store";
+        return Results.Ok();
+    });
+
 app.MapControllers();
 
 app.Run();
