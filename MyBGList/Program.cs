@@ -152,7 +152,12 @@ app.UseAuthorization();
 
 app.Use((context, next) =>
 {
-    context.Response.Headers["cache-control"] = "no-cache, no-store";
+    context.Response.GetTypedHeaders().CacheControl =
+        new Microsoft.Net.Http.Headers.CacheControlHeaderValue()
+        {
+            NoCache = true,
+            NoStore = true,
+        };
     return next.Invoke();
 });
 
