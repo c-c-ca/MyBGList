@@ -39,32 +39,30 @@ namespace MyBGList.Controllers
                 "Get method started at {StartTime.Now:HH:mm}",
                 DateTime.Now);
 
-            var query = _context.BoardGames.AsQueryable();
-            if (!string.IsNullOrEmpty(input.FilterQuery))
-            {
-                query = query.Where(b => b.Name.Contains(input.FilterQuery));
-            }
-
-            var recordCount = await query.CountAsync();
-
-            BoardGame[]? result = null;
+            (int recordCount, BoardGame[]? result) dataTuple = (0, null);
             var cacheKey = $"{input.GetType()}-{JsonSerializer.Serialize(input)}";
-            if (!_memoryCache.TryGetValue<BoardGame[]>(cacheKey, out result))
+            if (!_memoryCache.TryGetValue<(int, BoardGame[]?)>(cacheKey, out dataTuple))
             {
+                var query = _context.BoardGames.AsQueryable();
+                if (!string.IsNullOrEmpty(input.FilterQuery))
+                {
+                    query = query.Where(b => b.Name.Contains(input.FilterQuery));
+                }
+                dataTuple.recordCount = await query.CountAsync();
                 query = query
                     .OrderBy($"{input.SortColumn} {input.SortOrder}")
                     .Skip(input.PageIndex * input.PageSize)
                     .Take(input.PageSize);
-                result = await query.ToArrayAsync();
-                _memoryCache.Set(cacheKey, result, new TimeSpan(0, 0, 30));
+                dataTuple.result = await query.ToArrayAsync();
+                _memoryCache.Set(cacheKey, dataTuple, new TimeSpan(0, 0, 30));
             }
 
             return new RestDTO<BoardGame[]>()
             {
-                Data = result,
+                Data = dataTuple.result,
                 PageIndex = input.PageIndex,
                 PageSize = input.PageSize,
-                RecordCount = recordCount,
+                RecordCount = dataTuple.recordCount,
                 Links = new List<LinkDTO>
                 {
                     new LinkDTO(
