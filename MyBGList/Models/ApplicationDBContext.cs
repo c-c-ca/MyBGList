@@ -1,10 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace MyBGList.Models
 {
-    public class ApplicationDBContext : DbContext
+    public class ApplicationDBContext : IdentityDbContext<ApiUser>
     {
         public ApplicationDBContext(
             DbContextOptions<ApplicationDBContext> options) 
