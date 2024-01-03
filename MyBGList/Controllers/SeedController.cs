@@ -1,7 +1,7 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyBGList.Models;
@@ -11,7 +11,7 @@ using System.Globalization;
 namespace MyBGList.Controllers
 {
     [Authorize]
-    [Route("[controller]")]
+    [Route("[controller]/[action]")]
     [ApiController]
     public class SeedController : ControllerBase
     {
@@ -21,20 +21,27 @@ namespace MyBGList.Controllers
 
         private readonly ILogger<SeedController> _logger;
 
+        private readonly RoleManager<ApiUser> _roleManager;
+
+        private readonly UserManager<ApiUser> _userManager;
+
         public SeedController(
             ApplicationDBContext context,
             IWebHostEnvironment env,
-            ILogger<SeedController> logger
-            )
+            ILogger<SeedController> logger,
+            RoleManager<ApiUser> roleManager,
+            UserManager<ApiUser> userManager)
         {
             _context = context;
             _env = env;
             _logger = logger;
+            _roleManager = roleManager;
+            _userManager = userManager;
         }
 
-        [HttpPut(Name = "Seed")]
+        [HttpPut]
         [ResponseCache(CacheProfileName = "NoCache")]
-        public async Task<IActionResult> Seed ()
+        public async Task<IActionResult> BoardGameData ()
         {
             var config = new CsvConfiguration(CultureInfo.GetCultureInfo("pt-BR"))
             {
@@ -159,6 +166,13 @@ namespace MyBGList.Controllers
                 Mechanics = _context.Mechanics.Count(),
                 SkippedRows = skippedRows,
             });
+        }
+
+        [HttpPost]
+        [ResponseCache(NoStore = true)]
+        public async Task<IActionResult> AuthData()
+        {
+            throw new NotImplementedException();
         }
     }
 }
