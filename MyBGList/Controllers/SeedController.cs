@@ -213,7 +213,7 @@ namespace MyBGList.Controllers
 
             var testSuperAdmin = await _userManager.FindByNameAsync("TestSuperAdmin");
             if (testAdministrator != null &&
-                !await _userManager.IsInRoleAsync(testSuperAdmin, RoleNames.Administrator))
+                !await _userManager.IsInRoleAsync(testSuperAdmin, RoleNames.SuperAdmin))
             {
                 await _userManager.AddToRoleAsync(testSuperAdmin, RoleNames.Moderator);
                 await _userManager.AddToRoleAsync(testSuperAdmin, RoleNames.Administrator);
