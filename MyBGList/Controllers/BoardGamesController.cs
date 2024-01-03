@@ -8,6 +8,7 @@ using MyBGList.Constants;
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Dynamic.Core;
 using System.Text.Json;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MyBGList.Controllers
 {
@@ -85,6 +86,7 @@ namespace MyBGList.Controllers
             };
         }
 
+        [Authorize]
         [HttpPost(Name = "UpdateBoardGame")]
         [ResponseCache(CacheProfileName = "NoCache")]
         public async Task<RestDTO<BoardGame?>> Post(BoardGameDTO model)
@@ -126,6 +128,7 @@ namespace MyBGList.Controllers
             };
         }
 
+        [Authorize]
         [HttpDelete(Name = "DeleteBoardGame")]
         [ResponseCache(CacheProfileName = "NoCache")]
         public async Task<RestDTO<BoardGame?>> Delete(int id)
