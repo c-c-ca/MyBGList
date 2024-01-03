@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using MyBGList.Attributes;
+using MyBGList.Constants;
 using MyBGList.DTO;
 using MyBGList.Extensions;
 using MyBGList.Models;
@@ -81,7 +82,7 @@ namespace MyBGList.Controllers
             };
         }
 
-        [Authorize]
+        [Authorize(Roles = RoleNames.Moderator)]
         [HttpPost(Name = "UpdateMechanic")]
         [ResponseCache(CacheProfileName = "NoCache")]
         public async Task<RestDTO<Mechanic?>> Post(MechanicDTO model)
@@ -119,7 +120,7 @@ namespace MyBGList.Controllers
             };
         }
 
-        [Authorize]
+        [Authorize(Roles = RoleNames.Administrator)]
         [HttpDelete(Name = "DeleteMechanic")]
         [ResponseCache(CacheProfileName = "NoCache")]
         public async Task<RestDTO<Mechanic?>> Delete(int id)
