@@ -5,7 +5,7 @@ VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyBGList", "MyBGList\MyBGList.csproj", "{05A545C8-504E-488F-A03C-8927E0AB6A61}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyBGList_ApiVersion", "MyBGList_ApiVersion\MyBGList_ApiVersion.csproj", "{C4F1C159-BF68-4C5F-BA20-826B8DF0C167}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyBGList_ApiVersion", "MyBGList_ApiVersion\MyBGList_ApiVersion.csproj", "{C4F1C159-BF68-4C5F-BA20-826B8DF0C167}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
